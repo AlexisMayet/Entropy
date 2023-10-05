@@ -1,13 +1,13 @@
-Entropy
+# Entropy
 
-Entropy is a computational system that takes simple agent behaviours and let's entropy grow to produce engaging visuals.
+Entropy is a computational system that takes **simple** agent behaviours and let's **entropy** grow to produce engaging visuals.
 
 The system simulates agents. These agents have an angle and move according to that angle and a defined speed. Agents leave "pheromone" trails behind that fade with time. 
 
-Display, spawn and collision mechanics are customizable. 
-Look at customizable sections of code (indicated with comments) to create your own simulation !
+Display, spawn and collision mechanics are **customizable**. 
+Look at customizable sections of code (indicated with comments) to **create your own simulation** !
 
-There is also a recodring mode in which you can handle larger computations not executable in real time. It saves all the frames in a folder. 
+There is also a recording mode in which you can handle larger computations not executable in real time. It saves all the frames in a folder. 
 
 The frames can be stitched together to create a video. 
 FFmpeg is a tool that allows that. To create videos : 
