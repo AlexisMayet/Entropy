@@ -16,6 +16,10 @@ FFmpeg is a tool that allows that. To create videos :
 2. Change directory to fodler containing recorder frames
 3. Type command printed in console after recording (looks like this : FFmpeg -framerate 30 -i frames-%04d.png -c:v libx264 -pix_fmt yuv420p output.mp4)
 
+
+
 https://github.com/AlexisMayet/Entropy/assets/72268260/d7fb38c9-6fc8-4f2b-b90e-5298fc69fb23
+
+
 
 Please reference this repo with any simulation you publish ;)
