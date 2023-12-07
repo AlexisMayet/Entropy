@@ -13,6 +13,15 @@ float acc = 0.00;
 // Max agents: number of maximum agents (cap agents to maintain performance)
 int maxAgents = 4 * numAgents;
 
+//Colision direction : whether agents points towards center after collision with wall
+boolean collisionCenterDir = true;
+
+//Center direction : whether spawn direction is aimed at center
+boolean spawnCenterDir = true;
+
+//Correct angle : whether to correct spawn angle to be directed within the grid (for "corners" and "edges" spawns)
+boolean correctAngle = true;
+
 // PHEROMONES: trail left behind by agents
 
 // Pheromone threshold: min value for a pheromone to exist. (CUT TRAIL OFF)
@@ -27,31 +36,28 @@ float pheroDecay = 0.05;
 boolean spawnAtInit = false;
 
 /* spawn: specify the spawning point of agents:
-  - center: agents will spawn at center of the screen
-  - corners: agents will spawn at corners of the screen
-  - edges: agents will spawn at edges of the screen
-  - random: agents will spawn at random places
-  - spiral: agents will spawn on a spiral (see agent class CUSTOMIZABLE to customize spiral)
-*/
+ - center: agents will spawn at center of the screen
+ - corners: agents will spawn at corners of the screen
+ - edges: agents will spawn at edges of the screen
+ - random: agents will spawn at random places
+ - spiral: agents will spawn on a spiral (see agent class CUSTOMIZABLE to customize spiral) */
 String spawn = "corners";
 
 /* Circle spawn: spawn parameters for circle on spawning point
-   - detail: "on" agents spawn on the edge of the circle defined by radius in the center
-             "in" agents spawn in the circle defined by radius (random pos in circle)
-             "off" agents spawn in the center of the environment
-*/
+ - detail: "on" agents spawn on the edge of the circle defined by radius in the center
+ "in" agents spawn in the circle defined by radius (random pos in circle)
+ "off" agents spawn in the center of the environment */
 String detail = "on";
 
 // Radius: radius of circle spawn
 int radius = 100;
 
 /* CANVAS: define boundaries for agents to bounce on :
-   square: agents will bounce on a square canvas
-   circle: agents will bounce on a circular canvas
-*/
+ square: agents will bounce on a square canvas
+ circle: agents will bounce on a circular canvas */
 Canvas canvas;
 String shape = "circle";
-int pad = 50;
+int pad = 100;
 
 // DISPLAY
 
@@ -67,14 +73,14 @@ int[] rgbP = {0, 0, 0};       // Color pheromone will fade to
 
 // CLICK
 /* Click type: what program does when clicking (left-click / right-click)
-  - true: spawn new gen / delete old gen
-  - false: attract agents / push agents away from point of click
-*/
+ - true: spawn new gen / delete old gen
+ - false: attract agents / push agents away from point of click
+ */
 boolean clickType = true;
 
 // RECORDING: recording parameters for saving frames
 
-boolean recording = true;     // Whether to record simulation
+boolean recording = false;     // Whether to record simulation
 int fr = 30;                   // Frame rate to record at
 int intro = 1;                 // Length of intro (seconds) (== background screen without agents)
 int outro = 1;                 // Length of outro (seconds) (== background screen without agents)
@@ -95,7 +101,7 @@ int lowestAge = 0;
 void spawn() {
   // Spawn new agents
   for (int i = 0; i < numAgents; i++) {
-    agents.add(new Agent(canvas,speed, acc, spawn, detail, radius, agentSize, age, rgbA));
+    agents.add(new Agent(canvas, collisionCenterDir, spawnCenterDir, correctAngle, speed, acc, spawn, detail, radius, agentSize, age, rgbA));
   }
   age++; // Increase age
 
@@ -140,9 +146,9 @@ void draw() {
     spawn = "center";
     spawn();
   }
-
-  println("Iter: " + frameCount);
-
+  if (frameCount%50 == 0) {
+    println("Iter: " + frameCount);
+  }
   // Background color
   background(rgbB[0], rgbB[1], rgbB[2]);
 
