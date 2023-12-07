@@ -1,37 +1,50 @@
-class Pheromone {
+class Pheromone{ //Trail of agents
+
   PVector pos;
   float strength;
   float decaySpeed;
   float acc;
-  int[] rgbA;
-  int[] rgbP;
+  String colorChange;
+  float diff;
+  color rgbA;
+  color rgbP;
   float size;
-  
-  // Create pheromone
-  Pheromone(PVector pos, float pheroDecay, float acc, int[] rgbA, int[] rgbP, float size) {
+  int band;
+  boolean tokill;
+  //Create pheromone
+  Pheromone(PVector pos, float pheroDecay, float acc,color rgbA, color rgbP, String colorChange, float diff,float size){
     this.pos = pos;
+    this.colorChange = colorChange;
+    this.diff = diff;
     this.decaySpeed = pheroDecay;
     this.acc = acc;
     this.rgbA = rgbA;
     this.rgbP = rgbP;
     this.size = size;
+    this.band = band;
     this.strength = 1;
+    this.tokill = false;
+    
+  }
+  void decay(){ //Decay pheromone strength
+    this.strength += - decaySpeed;
   }
   
-  void decay() { 
-    // Decay pheromone strength
-    this.strength += -decaySpeed;
-  }
-  
-  void show() {
-    // Create color objects
-    color colourA = color(rgbA[0], rgbA[1], rgbA[2]);
-    color colourP = color(rgbP[0], rgbP[1], rgbP[2]);
+  void show(){ //Display
     
-    // Get fade of objects given colors & strength
-    color trailColor = lerpColor(colourA, colourP, 1 - strength);
+    //Get fade of objects given colours & strength
+    color trailColor = lerpColor(rgbA, rgbP, (1-strength));
     
+    if(this.colorChange == "distance"){
+      trailColor = lerpColor(rgbA, rgbP, (this.diff));
+    } 
+    if(tokill){
+      //trailColor = lerpColor(this.rgbP, color(0,0,0), 0.5);
+      //trailColor = color(0,0,0);
+      this.size += 0;
+    }
+    //stroke(255);
     fill(trailColor);
-    rect(pos.x, pos.y, size, size);
+    ellipse(pos.x,pos.y,size,size);
   }
 }

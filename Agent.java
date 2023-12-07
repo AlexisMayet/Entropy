@@ -19,25 +19,40 @@ class Agent {
 
   int radius;
 
-  int[] rgb;
   float size;
   int age;
 
+  color ac;
+  color pc;
+  color contour;
+  color[] palette;
+  String colorChange;
+  int cIndex;
+  float diff = 1;
+  boolean bounced;
   Canvas canvas;
 
   // Create
-  Agent(Canvas canvas,boolean collisionCenterDir,boolean spawnCenterDir,boolean correctAngle, float speed, float acc, String spawn, String detail, int radius, float size, int age, int[] rgb) {
+  Agent(Canvas canvas, boolean collisionCenterDir, boolean spawnCenterDir, boolean correctAngle, float speed, float acc, String spawn, String detail, int radius, float size, int age, color[] palette, color pc, color contour, String colorChange) {
     this.canvas = canvas;
+
     this.spawnCenterDir = spawnCenterDir;
     this.collisionCenterDir = collisionCenterDir;
     this.correctAngle = correctAngle;
+
+    this.pc = pc;
+    this.contour = contour;
+    this.palette = palette;
+    this.colorChange = colorChange;
+    this.cIndex = 0;
+    this.ac = palette[cIndex];
+
     this.speed = speed;
     this.acc = acc;
     this.size = size;
-    this.rgb = rgb;
     this.radius = radius;
     this.age = age;
-    
+
     this.angle = random(2*PI);
 
     if (spawn == "center") { // Spawn in center (customizable)
@@ -114,15 +129,44 @@ class Agent {
     // Update position
     PVector dir = new PVector(cos(angle), sin(angle));
     this.pos.add(dir.mult(speed));
+    this.speed += this.acc; // Apply acceleration
 
     canvas.bounce(this);
 
-    this.speed += this.acc; // Apply acceleration
+    if (colorChange == "bounce" && this.bounced) {//COLOR CHANGE ON BOUNCE
+      colorChange();
+      this.bounced = false;
+    } else if (colorChange == "distance") {
+      float distance = sqrt(pow(pos.x - width/2, 2) + pow(pos.y - height/2, 2));
+      float fi = map(distance, 0, canvas.maxDistance, 0, palette.length-1); //float index
+      int ip = floor(fi);
+      this.diff = fi - ip;
+      int ia = ip+1;
+      //println("phero index : " + ip);
+      //println("agent index : " + ia);
+      if (ip >= palette.length) {
+        ip= palette.length-1;
+      }
+      if (ia >= palette.length) {
+        ia = 0;
+      }
+      this.pc = palette[ia];
+      this.ac = palette[ip];
+    }
+  }
+
+  void colorChange() {
+    this.pc = this.ac;
+    this.cIndex ++;
+    if (cIndex == palette.length) {
+      cIndex = 0;
+    }
+    this.ac = palette[cIndex];
   }
 
   // Display
   void show() {
-    fill(rgb[0], rgb[1], rgb[2]);
+    fill(this.contour);
     noStroke();
     rect(pos.x, pos.y, this.size, this.size);
   }

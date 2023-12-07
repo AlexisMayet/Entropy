@@ -24,22 +24,24 @@ class Canvas {
       if (shape!="circle") { //Bounce on square
 
         if (a.pos.x <= 0 + pad || a.pos.x>=width - pad || a.pos.y<=0 + pad || a.pos.y>= height - pad) {
-
           a.angle = atan2(a.pos.y - height/2, a.pos.x - width/2) + PI;
+          a.bounced = true;
         }
       } else { //Bounce on circle (w radius == width)
 
         if ( sqrt(pow((a.pos.x - width/2), 2) + pow((a.pos.y - height/2), 2)) > (width/2) - pad) { //Out of bounds
-
           a.angle = atan2(a.pos.y - height/2, a.pos.x - width/2) + PI;
+          a.bounced = true;
         }
       }
     } else { //Agent bounces on wall
       if (shape!="circle") {
         if (a.pos.x<=0 + pad || a.pos.x>= width - pad) {//Vertical wall
           a.angle = PI - a.angle;
+          a.bounced = true;
         } else if (a.pos.y<= 0  + pad|| a.pos.y>= height - pad) {//Horizontal wall
           a.angle = -a.angle;
+          a.bounced = true;
         }
       } else { //Bounce off sphere
         if (sqrt(pow(a.pos.x - width/2, 2) + pow(a.pos.y - height/2, 2)) >= maxDistance ) { //Out of bounds
@@ -51,6 +53,7 @@ class Canvas {
           a.angle = a.angle - 2 * angleDiff;
           float newPositionDistance = maxDistance - a.size;
           a.pos = new PVector(width/2 + newPositionDistance * cos(angleToCenter), height/2 + newPositionDistance * sin(angleToCenter));
+          a.bounced = true;
         }
       }
     }

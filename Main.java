@@ -17,10 +17,11 @@ int maxAgents = 4 * numAgents;
 boolean collisionCenterDir = true;
 
 //Center direction : whether spawn direction is aimed at center
-boolean spawnCenterDir = true;
+boolean spawnCenterDir = false;
 
 //Correct angle : whether to correct spawn angle to be directed within the grid (for "corners" and "edges" spawns)
 boolean correctAngle = true;
+
 
 // PHEROMONES: trail left behind by agents
 
@@ -56,7 +57,7 @@ int radius = 100;
  square: agents will bounce on a square canvas
  circle: agents will bounce on a circular canvas */
 Canvas canvas;
-String shape = "circle";
+String shape = "square";
 int pad = 100;
 
 // DISPLAY
@@ -67,9 +68,12 @@ boolean heads = false;
 
 // COLORS
 
-int[] rgbA = {255, 255, 255}; // Agent color
-int[] rgbB = {0, 0, 0};       // Background color
-int[] rgbP = {0, 0, 0};       // Color pheromone will fade to
+color ac = color(255, 255, 255); // Agent color
+color bc = color(0, 0, 0);       //Background colour
+color pc = color(0,0,0); // Color pheromone will fade to
+color[] palette = {color(249, 0, 99), color(229, 78, 208), color(159, 69, 176), color(68, 0, 139), color(0, 7, 111)}; //Galaxy //color(249,0,99),color(255,228,242)
+String colorChange = "distance";
+color contour = color(0, 0, 0);
 
 // CLICK
 /* Click type: what program does when clicking (left-click / right-click)
@@ -101,7 +105,7 @@ int lowestAge = 0;
 void spawn() {
   // Spawn new agents
   for (int i = 0; i < numAgents; i++) {
-    agents.add(new Agent(canvas, collisionCenterDir, spawnCenterDir, correctAngle, speed, acc, spawn, detail, radius, agentSize, age, rgbA));
+    agents.add(new Agent(canvas, collisionCenterDir, spawnCenterDir, correctAngle, speed, acc, spawn, detail, radius, agentSize, age, palette, pc, contour, colorChange));
   }
   age++; // Increase age
 
@@ -150,13 +154,14 @@ void draw() {
     println("Iter: " + frameCount);
   }
   // Background color
-  background(rgbB[0], rgbB[1], rgbB[2]);
+  background(bc);
 
   // Move agents, Display agents & add pheromones
   for (int i = 0; i < agents.size(); i++) {
-    pheromones.add(new Pheromone(agents.get(i).pos.copy(), pheroDecay, acc, rgbA, rgbP, agentSize));
-    agents.get(i).update();
-    agents.get(i).show();
+    Agent a = agents.get(i);
+    pheromones.add(new Pheromone(a.pos.copy(), pheroDecay, a.acc, a.ac, a.pc, a.colorChange, a.diff, a.size));
+    a.update();
+    a.show();
   }
 
   // Display pheromones
