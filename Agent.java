@@ -44,46 +44,46 @@ class Agent {
       this.pos = new PVector(width/2, height/2);
     } else if (spawn == "corners") { // Spawn in corners
       // Choose corners randomly
-      int[] xs = {0, width};
-      int[] ys = {0, height};
+      int[] xs = {0 + canvas.pad, width - canvas.pad};
+      int[] ys = {0 + canvas.pad, height - canvas.pad};
       this.pos = new PVector(xs[int(random(0, 2))], ys[int(random(0, 2))]);
 
       if (correctAngle) { // Correct angle to point towards canvas
-        if (this.pos.equals(new PVector(0, 0))) { // Top left: angle to bot right
+        if (this.pos.equals(new PVector(0 + canvas.pad, 0 + canvas.pad))) { // Top left: angle to bot right
           this.angle = random(0, PI/2);
-        } else if (this.pos.equals(new PVector(0, height))) { // Bot left: angle to top right
+        } else if (this.pos.equals(new PVector(0 + canvas.pad, height - canvas.pad))) { // Bot left: angle to top right
           this.angle = random(3*PI/2, 2*PI);
-        } else if (this.pos.equals(new PVector(width, 0))) { // Top right: angle to bot left
+        } else if (this.pos.equals(new PVector(width - canvas.pad, 0 + canvas.pad))) { // Top right: angle to bot left
           this.angle = random(PI/2, PI);
-        } else if (this.pos.equals(new PVector(width, height))) { // Bot right: angle to top left
+        } else if (this.pos.equals(new PVector(width - canvas.pad, height - canvas.pad))) { // Bot right: angle to top left
           this.angle = random(PI, 3*PI/2);
         }
       }
     } else if (spawn == "edges") { // Spawn on edges
       // Define 4 edge centers
       PVector [] edges = {
-        new PVector(0, height/2),
-        new PVector(width/2, 0),
-        new PVector(width, height/2),
-        new PVector(width/2, height)
+        new PVector(0 + canvas.pad, height/2),
+        new PVector(width/2, 0+canvas.pad),
+        new PVector(width-canvas.pad, height/2),
+        new PVector(width/2, height - canvas.pad)
       };
       this.pos = edges[int(random(4))];
 
       if (correctAngle) { // Correct angle to point towards canvas
-        if (this.pos.equals(new PVector(0, height/2))) { // Left edge: angle to the right
+        if (this.pos.equals(edges[0])) { // Left edge: angle to the right
           this.angle = random(3*PI/2, 5*PI/2);
-        } else if (this.pos.equals(new PVector(width/2, 0))) { // Top edge: angle to the bot
+        } else if (this.pos.equals(edges[1])) { // Top edge: angle to the bot
           this.angle = random(0, PI);
-        } else if (this.pos.equals(new PVector(width, height/2))) { // Right edge: angle to the left
+        } else if (this.pos.equals(edges[2])) { // Right edge: angle to the left
           this.angle = random(PI/2, 3*PI/2);
-        } else if (this.pos.equals(new PVector(width/2, height))) { // Bot edge: angle to the top
+        } else if (this.pos.equals(edges[3])) { // Bot edge: angle to the top
           this.angle = random(PI, 2*PI);
         }
       }
     }
 
     if (spawn == "random") { // Random position
-      this.pos = new PVector(random(width), random(height));
+      this.pos = new PVector(random(pad, width-pad), random(pad, height-pad));
     } else if (spawn == "spiral") { // Spiral position
       // Equation for spiral: x(t) = a * t * cos(t), y(t) = a * t * sin(t)
       float t = random(1) * tScale;
