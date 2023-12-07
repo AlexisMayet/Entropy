@@ -28,10 +28,10 @@ class Agent {
   float size;
   int age;
   
-  String canvas;
+  Canvas canvas;
   
   // Create
-  Agent(float speed, float acc, String spawn, String detail, int radius, String canvas, float size, int age, int[] rgb){
+  Agent(Canvas canvas,float speed, float acc, String spawn, String detail, int radius, float size, int age, int[] rgb){
     this.speed = speed;
     this.acc = acc;
     this.size = size;
@@ -116,24 +116,7 @@ class Agent {
     PVector dir = new PVector(cos(angle), sin(angle));
     this.pos.add(dir.mult(speed));
     
-    // Collision
-    if(collisionCenterDir){ // Angle towards center
-      if(canvas != "circle"){ // Bounce on square
-        if(pos.x <= 0 || pos.x >= width || pos.y <= 0 || pos.y >= height){
-          this.angle = atan2(pos.y - height/2, pos.x - width/2) + PI;
-        }
-      } else { // Bounce on circle (with radius == width)
-        if(sqrt(pow((pos.x - width/2), 2) + pow((pos.y - height/2), 2)) > width/2){ // Out of bounds
-          this.angle = atan2(pos.y - height/2, pos.x - width/2) + PI;
-        }
-      }
-    } else { // Angle bounces on wall
-      if(pos.x <= 0 || pos.x >= width){ // Vertical wall
-        this.angle = PI - this.angle;
-      } else if(pos.y <= 0 || pos.y >= height){ // Horizontal wall
-        this.angle = -this.angle;
-      }
-    }
+    canvas.bounce(this);
     
     this.speed += this.acc; // Apply acceleration
   }

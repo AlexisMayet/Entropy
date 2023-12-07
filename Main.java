@@ -49,7 +49,9 @@ int radius = 100;
    square: agents will bounce on a square canvas
    circle: agents will bounce on a circular canvas
 */
-String canvas = "square";
+Canvas canvas;
+String shape = "circle";
+int pad = 50;
 
 // DISPLAY
 
@@ -93,7 +95,7 @@ int lowestAge = 0;
 void spawn() {
   // Spawn new agents
   for (int i = 0; i < numAgents; i++) {
-    agents.add(new Agent(speed, acc, spawn, detail, radius, canvas, agentSize, age, rgbA));
+    agents.add(new Agent(canvas,speed, acc, spawn, detail, radius, agentSize, age, rgbA));
   }
   age++; // Increase age
 
@@ -117,6 +119,7 @@ void purge() {
 
 // Simulation setup
 void setup() {
+  canvas = new Canvas(shape, pad);
   size(800, 800);
   noStroke();
   rectMode(CENTER);
