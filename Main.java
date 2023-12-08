@@ -180,9 +180,12 @@ void draw() {
       p.decay();
     }
 
-    // Remove pheromones under threshold
-    if (p.strength <= pheroThreshold) {
+    if (p.tokill) {
       pheromones.remove(j);
+    }
+    //Remove pheromones under threshold
+    if (p.strength <= pheroThreshold) {
+      p.tokill = true;
     }
   }
 
