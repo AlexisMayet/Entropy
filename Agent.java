@@ -143,10 +143,11 @@ class Agent {
     float distance = sqrt(pow(pos.x - width/2, 2) + pow(pos.y - height/2, 2));
 
     if(distance <= canvas.maxDistance+size){
-      
       canvas.bounce(this);
+    } else {
+      distance = canvas.maxDistance-size;
     }
-    
+      
 
     if (colorChange == "bounce" && this.bounced) {//COLOR CHANGE ON BOUNCE
       colorChange();
