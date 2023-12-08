@@ -3,7 +3,7 @@
 // AGENT: agents that move on the canvas
 
 // Number of agents
-int numAgents = 1000;
+int numAgents = 5000;
 // Agent size
 float agentSize = 5;
 // Agent Speed :
@@ -17,7 +17,7 @@ int maxAgents = 4 * numAgents;
 boolean collisionCenterDir = true;
 
 //Center direction : whether spawn direction is aimed at center
-boolean spawnCenterDir = false;
+boolean spawnCenterDir = true;
 
 //Correct angle : whether to correct spawn angle to be directed within the grid (for "corners" and "edges" spawns)
 boolean correctAngle = true;
@@ -29,7 +29,7 @@ boolean correctAngle = true;
 // (!!Increase this value to increase performance!!)
 float pheroThreshold = 0.2;
 // Pheromone decay speed: speed at which pheromones (trails) will fade (SHORTEN TRAIL)
-float pheroDecay = 0.05;
+float pheroDecay = 0.1;
 
 // SPAWN: spawn parameters for agents
 
@@ -57,7 +57,7 @@ int radius = 100;
  square: agents will bounce on a square canvas
  circle: agents will bounce on a circular canvas */
 Canvas canvas;
-String shape = "square";
+String shape = "circle";
 int pad = 100;
 
 // DISPLAY

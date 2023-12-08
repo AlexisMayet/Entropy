@@ -6,8 +6,8 @@ class Agent {
   boolean correctAngle;
 
   // SPIRAL CUSTOMIZATION
-  float tScale = 200;
-  float a = 5;
+  float tScale = 15;
+  float a = 250;
 
   // END OF CUSTOMIZABLE
 
@@ -102,8 +102,17 @@ class Agent {
     } else if (spawn == "spiral") { // Spiral position
       // Equation for spiral: x(t) = a * t * cos(t), y(t) = a * t * sin(t)
       float t = random(1) * tScale;
-      float x = width/2 + a * t * cos(t);
-      float y = height/2 + a * t * sin(t);
+      float offsetX = a * t * cos(t);
+      float offsetY = a * t * sin(t);
+      float x = width/2 ;
+      float y = height/2 ;
+      if(random(1)>0.5){
+        x += offsetX;
+        y += offsetY;
+      } else{
+        x -= offsetX;
+        y -= offsetY;
+      }
       this.pos = new PVector(x, y);
     } else {
       float xfactor = cos(angle);
@@ -122,6 +131,7 @@ class Agent {
     if (spawnCenterDir) { // Change angle to point to the center
       this.angle = atan2(pos.y - height/2, pos.x - width/2) + PI;
     }
+    
   }
 
   // Update
@@ -130,14 +140,18 @@ class Agent {
     PVector dir = new PVector(cos(angle), sin(angle));
     this.pos.add(dir.mult(speed));
     this.speed += this.acc; // Apply acceleration
+    float distance = sqrt(pow(pos.x - width/2, 2) + pow(pos.y - height/2, 2));
 
-    canvas.bounce(this);
+    if(distance <= canvas.maxDistance+size){
+      
+      canvas.bounce(this);
+    }
+    
 
     if (colorChange == "bounce" && this.bounced) {//COLOR CHANGE ON BOUNCE
       colorChange();
       this.bounced = false;
     } else if (colorChange == "distance") {
-      float distance = sqrt(pow(pos.x - width/2, 2) + pow(pos.y - height/2, 2));
       float fi = map(distance, 0, canvas.maxDistance, 0, palette.length-1); //float index
       int ip = floor(fi);
       this.diff = fi - ip;
