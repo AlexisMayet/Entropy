@@ -1,4 +1,4 @@
-class Pheromone{ //Trail of agents
+class Pheromone { //Trail of agents
 
   PVector pos;
   float strength;
@@ -12,7 +12,7 @@ class Pheromone{ //Trail of agents
   int band;
   boolean tokill;
   //Create pheromone
-  Pheromone(PVector pos, float pheroDecay, float acc,color rgbA, color rgbP, String colorChange, float diff,float size){
+  Pheromone(PVector pos, float pheroDecay, float acc, color rgbA, color rgbP, String colorChange, float diff, float size) {
     this.pos = pos;
     this.colorChange = colorChange;
     this.diff = diff;
@@ -24,27 +24,26 @@ class Pheromone{ //Trail of agents
     this.band = band;
     this.strength = 1;
     this.tokill = false;
-    
   }
-  void decay(){ //Decay pheromone strength
+  void decay() { //Decay pheromone strength
     this.strength += - decaySpeed;
   }
-  
-  void show(){ //Display
-    
+
+  void show() { //Display
+
     //Get fade of objects given colours & strength
     color trailColor = lerpColor(rgbA, rgbP, (1-strength));
-    
-    if(this.colorChange == "distance"){
+
+    if (this.colorChange == "distance") {
       trailColor = lerpColor(rgbA, rgbP, (this.diff));
-    } 
-    if(tokill){
+    }
+    if (tokill) {
       //trailColor = lerpColor(this.rgbP, color(0,0,0), 0.5);
       //trailColor = color(0,0,0);
       this.size += 0;
     }
     //stroke(255);
     fill(trailColor);
-    ellipse(pos.x,pos.y,size,size);
+    ellipse(pos.x, pos.y, size, size);
   }
 }

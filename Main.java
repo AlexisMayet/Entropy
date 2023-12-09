@@ -3,33 +3,28 @@
 // AGENT: agents that move on the canvas
 
 // Number of agents
-int numAgents = 5000;
+int numAgents = 1000;
 // Agent size
 float agentSize = 5;
-// Agent Speed :
-float speed = 5;
-// Agent Acceleration: rate at which agent speed increases
+// Agent speed :
+float speed = 3;
+// Agent acceleration
 float acc = 0.00;
-// Max agents: number of maximum agents (cap agents to maintain performance)
-int maxAgents = 4 * numAgents;
 
 //Colision direction : whether agents points towards center after collision with wall
 boolean collisionCenterDir = true;
-
 //Center direction : whether spawn direction is aimed at center
-boolean spawnCenterDir = true;
-
+boolean spawnCenterDir = false;
 //Correct angle : whether to correct spawn angle to be directed within the grid (for "corners" and "edges" spawns)
 boolean correctAngle = true;
 
 
 // PHEROMONES: trail left behind by agents
-
 // Pheromone threshold: min value for a pheromone to exist. (CUT TRAIL OFF)
-// (!!Increase this value to increase performance!!)
 float pheroThreshold = 0.2;
 // Pheromone decay speed: speed at which pheromones (trails) will fade (SHORTEN TRAIL)
-float pheroDecay = 0.1;
+float pheroDecay = 0.25;
+
 
 // SPAWN: spawn parameters for agents
 
@@ -48,10 +43,11 @@ String spawn = "corners";
  - detail: "on" agents spawn on the edge of the circle defined by radius in the center
  "in" agents spawn in the circle defined by radius (random pos in circle)
  "off" agents spawn in the center of the environment */
-String detail = "on";
+String detail = "off";
 
 // Radius: radius of circle spawn
 int radius = 100;
+
 
 /* CANVAS: define boundaries for agents to bounce on :
  square: agents will bounce on a square canvas
@@ -68,11 +64,9 @@ boolean heads = false;
 
 // COLORS
 
-color ac = color(255, 255, 255); // Agent color
 color bc = color(0, 0, 0);       //Background colour
-color pc = color(0,0,0); // Color pheromone will fade to
 color[] palette = {color(249, 0, 99), color(229, 78, 208), color(159, 69, 176), color(68, 0, 139), color(0, 7, 111)}; //Galaxy //color(249,0,99),color(255,228,242)
-String colorChange = "distance";
+String colorChange = "bounce";
 color contour = color(0, 0, 0);
 
 // CLICK
@@ -85,17 +79,17 @@ boolean clickType = true;
 // RECORDING: recording parameters for saving frames
 
 boolean recording = false;     // Whether to record simulation
-int fr = 30;                   // Frame rate to record at
+int fr = 60;                   // Frame rate to record at
 int intro = 1;                 // Length of intro (seconds) (== background screen without agents)
 int outro = 1;                 // Length of outro (seconds) (== background screen without agents)
-int totalLength = 10;          // Length of recording
+int totalLength = 15;          // Length of recording
 String folderAddress = "frames/build/"; // Address of folder where frames are saved
 String fileName = "frames-";   // Name of PNG file
 int digits = 4;                // Digits to add after the name
 
 // END OF CUSTOMIZABLE
 
-ArrayList<Agent> agents = new ArrayList<Agent>(maxAgents);
+ArrayList<Agent> agents = new ArrayList<Agent>();
 ArrayList<Pheromone> pheromones = new ArrayList<Pheromone>();
 
 int age = 0;
@@ -105,26 +99,9 @@ int lowestAge = 0;
 void spawn() {
   // Spawn new agents
   for (int i = 0; i < numAgents; i++) {
-    agents.add(new Agent(canvas, collisionCenterDir, spawnCenterDir, correctAngle, speed, acc, spawn, detail, radius, agentSize, age, palette, pc, contour, colorChange));
+    agents.add(new Agent(canvas, collisionCenterDir, spawnCenterDir, correctAngle, speed, acc, spawn, detail, radius, agentSize, age, palette, contour, colorChange));
   }
   age++; // Increase age
-
-  // Clean up agents
-  if (agents.size() > maxAgents) {
-    purge();
-  }
-}
-
-// Method purge: method to purge a generation of agents
-void purge() {
-  // Backwards loop to prevent array resizing while looping through issue
-  for (int j = agents.size() - 1; j >= 0; j--) {
-    Agent a = agents.get(j);
-    if (a.age == lowestAge) {
-      agents.remove(j);
-    }
-  }
-  lowestAge++;
 }
 
 // Simulation setup
@@ -147,7 +124,7 @@ void setup() {
 // draw method: draws iteratively
 void draw() {
   if (recording && frameCount == int(intro * fr)) { // Spawn setup for recording
-    spawn = "center";
+    spawn = "spiral";
     spawn();
   }
   if (frameCount%50 == 0) {
@@ -192,7 +169,6 @@ void draw() {
   if (recording) {
     String a = folderAddress + fileName + nf(frameCount, digits) + ".png";
     saveFrame(a);
-
     if (frameCount > int(fr * (totalLength - outro))) { // Make outro: purge all agents
       agents = new ArrayList<Agent>();
     }
@@ -235,8 +211,7 @@ void mouseClicked() {
     }
   } else { // Right click
     if (clickType) {
-      println("Despawning");
-      purge();
+      agents = new ArrayList<Agent>();
     } else { // Push away
       println("Repulsing");
       for (Agent a : agents) { // Change agent angle to point away from the point of click
@@ -256,8 +231,6 @@ void keyPressed() {
       a.angle += PI;
     }
     spawn = "random";
-  } else if (keyCode == BACKSPACE) { // Purge all agents
-    agents = new ArrayList<Agent>();
   } else if (key == 's') { // Spiral spawn
     spawn = "spiral";
     spawn();
@@ -286,8 +259,8 @@ void printType(boolean clickType) {
 // Print info
 void printRules() {
   println("Mode SPAWN/DESPAWN:");
-  println("Left click: spawn " + numAgents + " agents (Limited to " + maxAgents + " at once)");
-  println("Right click: delete oldest " + numAgents + " agents");
+  println("Left click: spawn " + numAgents + " agents");
+  println("Right click: delete agents");
   println("");
   println("Mode ATTRACT/REPULSE");
   println("Left click: agents will change direction towards the point of click");

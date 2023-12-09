@@ -7,7 +7,7 @@ class Agent {
 
   // SPIRAL CUSTOMIZATION
   float tScale = 15;
-  float a = 250;
+  float a = 500;
 
   // END OF CUSTOMIZABLE
 
@@ -33,18 +33,19 @@ class Agent {
   Canvas canvas;
 
   // Create
-  Agent(Canvas canvas, boolean collisionCenterDir, boolean spawnCenterDir, boolean correctAngle, float speed, float acc, String spawn, String detail, int radius, float size, int age, color[] palette, color pc, color contour, String colorChange) {
+  Agent(Canvas canvas, boolean collisionCenterDir, boolean spawnCenterDir, boolean correctAngle, float speed, float acc, String spawn, String detail, int radius, float size, int age, color[] palette, color contour, String colorChange) {
     this.canvas = canvas;
 
     this.spawnCenterDir = spawnCenterDir;
     this.collisionCenterDir = collisionCenterDir;
     this.correctAngle = correctAngle;
 
-    this.pc = pc;
+
     this.contour = contour;
     this.palette = palette;
     this.colorChange = colorChange;
-    this.cIndex = 0;
+    this.cIndex = 1;
+    this.pc = palette[cIndex-1];
     this.ac = palette[cIndex];
 
     this.speed = speed;
@@ -57,21 +58,32 @@ class Agent {
 
     if (spawn == "center") { // Spawn in center (customizable)
       this.pos = new PVector(width/2, height/2);
-    } else if (spawn == "corners") { // Spawn in corners
-      // Choose corners randomly
-      int[] xs = {0 + canvas.pad, width - canvas.pad};
-      int[] ys = {0 + canvas.pad, height - canvas.pad};
-      this.pos = new PVector(xs[int(random(0, 2))], ys[int(random(0, 2))]);
+    } else if (spawn == "corners") {
+      float[] angles = {PI/4, 3*PI/4, 5*PI/4, 7*PI/4};
+      boolean[] isInCorner = {false, false, false, false};
+      int i = (int)random(4);
+      float spawnAngle = angles[i]; //BOT RIGHT
+      isInCorner[i] = true;
+      float x = width/2 + canvas.maxDistance * cos(spawnAngle);
+      float y = height/2 + canvas.maxDistance * sin(spawnAngle);
+      this.pos = new PVector(x, y);
 
       if (correctAngle) { // Correct angle to point towards canvas
-        if (this.pos.equals(new PVector(0 + canvas.pad, 0 + canvas.pad))) { // Top left: angle to bot right
-          this.angle = random(0, PI/2);
-        } else if (this.pos.equals(new PVector(0 + canvas.pad, height - canvas.pad))) { // Bot left: angle to top right
-          this.angle = random(3*PI/2, 2*PI);
-        } else if (this.pos.equals(new PVector(width - canvas.pad, 0 + canvas.pad))) { // Top right: angle to bot left
-          this.angle = random(PI/2, PI);
-        } else if (this.pos.equals(new PVector(width - canvas.pad, height - canvas.pad))) { // Bot right: angle to top left
-          this.angle = random(PI, 3*PI/2);
+        float[][] correctAngles;
+        if (canvas.shape == "square") {
+          correctAngles = new float[][]{{PI, 3*PI/2}, {3*PI/2, 2*PI}, {0, PI/2}, {PI/2, PI}};
+        } else {
+          correctAngles = new float[][]{{3*PI/4, 7*PI/4}, {-3*PI/4, PI/4}, {7*PI/4, 11*PI/4}, {PI/4, 5*PI/4}};
+        }
+
+        if (isInCorner[0]) { // Bot right: angle to top left
+          this.angle = random(correctAngles[0][0], correctAngles[0][1]);
+        } else if (isInCorner[1]) { // Bot left: angle to top right
+          this.angle = random(correctAngles[1][0], correctAngles[1][1]);
+        } else if (isInCorner[2]) { // Top left: angle to bot right
+          this.angle = random(correctAngles[2][0], correctAngles[2][1]);
+        } else if (isInCorner[3]) { // Top right: angle to bot left
+          this.angle = random(correctAngles[3][0], correctAngles[3][1]);
         }
       }
     } else if (spawn == "edges") { // Spawn on edges
@@ -106,10 +118,10 @@ class Agent {
       float offsetY = a * t * sin(t);
       float x = width/2 ;
       float y = height/2 ;
-      if(random(1)>0.5){
+      if (random(1)>0.5) {
         x += offsetX;
         y += offsetY;
-      } else{
+      } else {
         x -= offsetX;
         y -= offsetY;
       }
@@ -131,7 +143,6 @@ class Agent {
     if (spawnCenterDir) { // Change angle to point to the center
       this.angle = atan2(pos.y - height/2, pos.x - width/2) + PI;
     }
-    
   }
 
   // Update
@@ -142,12 +153,12 @@ class Agent {
     this.speed += this.acc; // Apply acceleration
     float distance = sqrt(pow(pos.x - width/2, 2) + pow(pos.y - height/2, 2));
 
-    if(distance <= canvas.maxDistance+size){
+    if (distance <= canvas.maxDistance+size) {
       canvas.bounce(this);
     } else {
       distance = canvas.maxDistance-size;
     }
-      
+
 
     if (colorChange == "bounce" && this.bounced) {//COLOR CHANGE ON BOUNCE
       colorChange();
