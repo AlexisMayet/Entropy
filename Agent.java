@@ -77,7 +77,10 @@ class Agent {
       int i = int(random(4));
       if(!randomSpawn){
         i = num%4;
-      }
+      } /*else {
+        num = (num - num%4)/4;
+        total = total/4;
+      }*/
       
       float spawnAngle = angles[i]; //BOT RIGHT
       isInCorner[i] = true;
@@ -95,13 +98,29 @@ class Agent {
         }
 
         if (isInCorner[0]) { // Bot right: angle to top left
-          this.angle = random(correctAngles[0][0], correctAngles[0][1]);
+          if(randomSpawn){
+            this.angle = random(correctAngles[0][0], correctAngles[0][1]);
+          } else {
+            this.angle = correctAngles[0][0] + (num/2*total)*(180/PI);
+          }
         } else if (isInCorner[1]) { // Bot left: angle to top right
-          this.angle = random(correctAngles[1][0], correctAngles[1][1]);
+          if(randomSpawn){
+            this.angle = random(correctAngles[1][0], correctAngles[1][1]);
+          } else {
+            this.angle = correctAngles[1][0] + (num/2*total)*(180/PI);
+          }
         } else if (isInCorner[2]) { // Top left: angle to bot right
-          this.angle = random(correctAngles[2][0], correctAngles[2][1]);
+          if(randomSpawn){
+            this.angle = random(correctAngles[2][0], correctAngles[2][1]);
+          } else {
+            this.angle = correctAngles[2][0] + (num/2*total)*(180/PI);
+          }
         } else if (isInCorner[3]) { // Top right: angle to bot left
-          this.angle = random(correctAngles[3][0], correctAngles[3][1]);
+          if(randomSpawn){
+            this.angle = random(correctAngles[3][0], correctAngles[3][1]);
+          } else {
+            this.angle = correctAngles[3][0] + (num/2*total)*(180/PI);
+          }
         }
       }
     } else if (spawn == "edges") { // Spawn on edges
@@ -121,12 +140,32 @@ class Agent {
       if (correctAngle) { // Correct angle to point towards canvas
         if (this.pos.equals(edges[0])) { // Left edge: angle to the right
           this.angle = random(3*PI/2, 5*PI/2);
+          if(randomSpawn){
+            this.angle = random(3*PI/2, 5*PI/2);
+          } else {
+            this.angle = 3*PI/2 + (num/2*total)*(180/PI);
+          }
         } else if (this.pos.equals(edges[1])) { // Top edge: angle to the bot
           this.angle = random(0, PI);
+          if(randomSpawn){
+            this.angle = random(0, PI);
+          } else {
+            this.angle = 0 + (num/2*total)*(180/PI);
+          }
         } else if (this.pos.equals(edges[2])) { // Right edge: angle to the left
           this.angle = random(PI/2, 3*PI/2);
+          if(randomSpawn){
+            this.angle = random(PI/2, 3*PI/2);
+          } else {
+            this.angle = PI/2 + (num/2*total)*(180/PI);
+          }
         } else if (this.pos.equals(edges[3])) { // Bot edge: angle to the top
           this.angle = random(PI, 2*PI);
+          if(randomSpawn){
+            this.angle = random(PI, 2*PI);
+          } else {
+            this.angle = PI + (num/2*total)*(180/PI);
+          }
         }
       }
     }
