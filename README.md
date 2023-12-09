@@ -17,7 +17,8 @@ FFmpeg is a tool that allows that. To create videos :
 3. Type command printed in console after recording (looks like this : FFmpeg -framerate 60 -i frames-%04d.png -c:v libx264 -pix_fmt yuv420p output.mp4)
 
 
-https://github.com/pr0jestisle/Entropy/assets/72268260/eab66990-3c5c-489c-83d8-ad28badc48bd
+
+https://github.com/pr0jestisle/Entropy/assets/72268260/61e2e327-948c-4a54-a2db-686855f8da39
 
 
 Please reference this repo if you use it ;)
