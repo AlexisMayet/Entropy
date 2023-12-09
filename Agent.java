@@ -5,6 +5,9 @@ class Agent {
   boolean spawnCenterDir;
   boolean correctAngle;
 
+  boolean randomSpawn;
+  int num;
+  int total;
   // SPIRAL CUSTOMIZATION
   float tScale = 15;
   float a = 500;
@@ -33,13 +36,16 @@ class Agent {
   Canvas canvas;
 
   // Create
-  Agent(Canvas canvas, boolean collisionCenterDir, boolean spawnCenterDir, boolean correctAngle, float speed, float acc, String spawn, String detail, int radius, float size, int age, color[] palette, color contour, String colorChange) {
+  Agent(Canvas canvas, boolean randomSpawn, int num, int total, boolean collisionCenterDir, boolean spawnCenterDir, boolean correctAngle, float speed, float acc, String spawn, String detail, int radius, float size, int age, color[] palette, color contour, String colorChange) {
     this.canvas = canvas;
 
     this.spawnCenterDir = spawnCenterDir;
     this.collisionCenterDir = collisionCenterDir;
     this.correctAngle = correctAngle;
 
+    this.randomSpawn = randomSpawn;
+    this.num = num;
+    this.total = total;
 
     this.contour = contour;
     this.palette = palette;
@@ -53,15 +59,26 @@ class Agent {
     this.size = size;
     this.radius = radius;
     this.age = age;
-
-    this.angle = random(2*PI);
-
+    if (randomSpawn) {
+      this.angle = random(TAU);
+    } else {
+      this.angle = (num * TAU)/total;
+    }
+    
     if (spawn == "center") { // Spawn in center (customizable)
+    
       this.pos = new PVector(width/2, height/2);
+      
     } else if (spawn == "corners") {
+      
       float[] angles = {PI/4, 3*PI/4, 5*PI/4, 7*PI/4};
       boolean[] isInCorner = {false, false, false, false};
-      int i = (int)random(4);
+      
+      int i = int(random(4));
+      if(!randomSpawn){
+        i = num%4;
+      }
+      
       float spawnAngle = angles[i]; //BOT RIGHT
       isInCorner[i] = true;
       float x = width/2 + canvas.maxDistance * cos(spawnAngle);
@@ -69,6 +86,7 @@ class Agent {
       this.pos = new PVector(x, y);
 
       if (correctAngle) { // Correct angle to point towards canvas
+      
         float[][] correctAngles;
         if (canvas.shape == "square") {
           correctAngles = new float[][]{{PI, 3*PI/2}, {3*PI/2, 2*PI}, {0, PI/2}, {PI/2, PI}};
@@ -94,7 +112,11 @@ class Agent {
         new PVector(width-canvas.pad, height/2),
         new PVector(width/2, height - canvas.pad)
       };
-      this.pos = edges[int(random(4))];
+      int i = int(random(4));
+      if(!randomSpawn){
+        i = num%4;
+      }
+      this.pos = edges[i];
 
       if (correctAngle) { // Correct angle to point towards canvas
         if (this.pos.equals(edges[0])) { // Left edge: angle to the right
@@ -114,10 +136,14 @@ class Agent {
     } else if (spawn == "spiral") { // Spiral position
       // Equation for spiral: x(t) = a * t * cos(t), y(t) = a * t * sin(t)
       float t = random(1) * tScale;
+      if(!randomSpawn){
+        t = num/total * tScale;
+      }
       float offsetX = a * t * cos(t);
       float offsetY = a * t * sin(t);
       float x = width/2 ;
       float y = height/2 ;
+      
       if (random(1)>0.5) {
         x += offsetX;
         y += offsetY;

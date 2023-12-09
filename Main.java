@@ -5,7 +5,7 @@
 // Number of agents
 int numAgents = 1000;
 // Agent size
-float agentSize = 5;
+float agentSize = 4;
 // Agent speed :
 float speed = 3;
 // Agent acceleration
@@ -31,6 +31,7 @@ float pheroDecay = 0.25;
 // spawnAtInit: whether agents will spawn at initialization
 boolean spawnAtInit = false;
 
+boolean randomSpawn = false;
 /* spawn: specify the spawning point of agents:
  - center: agents will spawn at center of the screen
  - corners: agents will spawn at corners of the screen
@@ -99,7 +100,7 @@ int lowestAge = 0;
 void spawn() {
   // Spawn new agents
   for (int i = 0; i < numAgents; i++) {
-    agents.add(new Agent(canvas, collisionCenterDir, spawnCenterDir, correctAngle, speed, acc, spawn, detail, radius, agentSize, age, palette, contour, colorChange));
+    agents.add(new Agent(canvas, randomSpawn, i, numAgents, collisionCenterDir, spawnCenterDir, correctAngle, speed, acc, spawn, detail, radius, agentSize, age, palette, contour, colorChange));
   }
   age++; // Increase age
 }
