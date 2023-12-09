@@ -6,16 +6,12 @@ class Canvas {
   Canvas(String shape, int pad) {
     this.shape = shape;
     this.pad = pad;
-    println("Pad : " + pad);
     if (shape == "square") {
       this.maxDistance = sqrt(pow(width/2 - pad, 2) + pow(height/2 - pad, 2));
-      println("Max Distance : " + maxDistance);
     } else if (shape == "circle") {
       this.maxDistance = sqrt(pow(pad - width/2, 2));
-      println("Max Distance : " + maxDistance);
     }
   }
-
 
   void bounce(Agent a) {
     if (a.collisionCenterDir) { //Angle towards center

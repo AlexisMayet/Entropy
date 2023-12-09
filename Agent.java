@@ -1,87 +1,82 @@
 class Agent {
   // CUSTOMIZABLE BELOW:
+  float tScale = 15; // "Curvature" of spiral
+  float a = 500; // Size of spiral
+  // END OF CUSTOMIZABLE
+
+  Canvas canvas;
+
+  boolean randomSpawn;
+  int num;
+  int total;
 
   boolean collisionCenterDir;
   boolean spawnCenterDir;
   boolean correctAngle;
 
-  boolean randomSpawn;
-  int num;
-  int total;
-  // SPIRAL CUSTOMIZATION
-  float tScale = 15;
-  float a = 500;
-
-  // END OF CUSTOMIZABLE
-
   float speed;
   float acc;
+  float size;
 
   PVector pos;
   float angle;
 
-  int radius;
-
-  float size;
-  int age;
-
-  color ac;
-  color pc;
   color contour;
   color[] palette;
   String colorChange;
+
+  color ac;
+  color pc;
   int cIndex;
   float diff = 1;
   boolean bounced;
-  Canvas canvas;
 
-  // Create
-  Agent(Canvas canvas, boolean randomSpawn, int num, int total, boolean collisionCenterDir, boolean spawnCenterDir, boolean correctAngle, float speed, float acc, String spawn, String detail, int radius, float size, int age, color[] palette, color contour, String colorChange) {
+  Agent(Canvas canvas, boolean randomSpawn, int num, int total, boolean collisionCenterDir, boolean spawnCenterDir, boolean correctAngle, float speed, float acc, float size, String spawn, String detail, int radius, color[] palette, color contour, String colorChange) {
     this.canvas = canvas;
-
-    this.spawnCenterDir = spawnCenterDir;
-    this.collisionCenterDir = collisionCenterDir;
-    this.correctAngle = correctAngle;
 
     this.randomSpawn = randomSpawn;
     this.num = num;
     this.total = total;
 
-    this.contour = contour;
-    this.palette = palette;
-    this.colorChange = colorChange;
-    this.cIndex = 1;
-    this.pc = palette[cIndex-1];
-    this.ac = palette[cIndex];
+    this.spawnCenterDir = spawnCenterDir;
+    this.collisionCenterDir = collisionCenterDir;
+    this.correctAngle = correctAngle;
 
     this.speed = speed;
     this.acc = acc;
     this.size = size;
-    this.radius = radius;
-    this.age = age;
+
+    this.palette = palette;
+    this.contour = contour;
+    this.colorChange = colorChange;
+
+    this.cIndex = 1;
+    this.pc = palette[cIndex-1];
+    this.ac = palette[cIndex];
+
+
     if (randomSpawn) {
       this.angle = random(TAU);
     } else {
       this.angle = (num * TAU)/total;
     }
-    
+
     if (spawn == "center") { // Spawn in center (customizable)
-    
+
       this.pos = new PVector(width/2, height/2);
-      
     } else if (spawn == "corners") {
-      
+
       float[] angles = {PI/4, 3*PI/4, 5*PI/4, 7*PI/4};
       boolean[] isInCorner = {false, false, false, false};
-      
+
       int i = int(random(4));
-      if(!randomSpawn){
+      if (!randomSpawn) {
         i = num%4;
       } /*else {
-        num = (num - num%4)/4;
-        total = total/4;
-      }*/
-      
+       num = (num - num%4)/4;
+       total = total/4;
+       }*/
+
       float spawnAngle = angles[i]; //BOT RIGHT
       isInCorner[i] = true;
       float x = width/2 + canvas.maxDistance * cos(spawnAngle);
@@ -89,7 +84,7 @@ class Agent {
       this.pos = new PVector(x, y);
 
       if (correctAngle) { // Correct angle to point towards canvas
-      
+
         float[][] correctAngles;
         if (canvas.shape == "square") {
           correctAngles = new float[][]{{PI, 3*PI/2}, {3*PI/2, 2*PI}, {0, PI/2}, {PI/2, PI}};
@@ -98,25 +93,25 @@ class Agent {
         }
 
         if (isInCorner[0]) { // Bot right: angle to top left
-          if(randomSpawn){
+          if (randomSpawn) {
             this.angle = random(correctAngles[0][0], correctAngles[0][1]);
           } else {
             this.angle = correctAngles[0][0] + (num/2*total)*(180/PI);
           }
         } else if (isInCorner[1]) { // Bot left: angle to top right
-          if(randomSpawn){
+          if (randomSpawn) {
             this.angle = random(correctAngles[1][0], correctAngles[1][1]);
           } else {
             this.angle = correctAngles[1][0] + (num/2*total)*(180/PI);
           }
         } else if (isInCorner[2]) { // Top left: angle to bot right
-          if(randomSpawn){
+          if (randomSpawn) {
             this.angle = random(correctAngles[2][0], correctAngles[2][1]);
           } else {
             this.angle = correctAngles[2][0] + (num/2*total)*(180/PI);
           }
         } else if (isInCorner[3]) { // Top right: angle to bot left
-          if(randomSpawn){
+          if (randomSpawn) {
             this.angle = random(correctAngles[3][0], correctAngles[3][1]);
           } else {
             this.angle = correctAngles[3][0] + (num/2*total)*(180/PI);
@@ -132,7 +127,7 @@ class Agent {
         new PVector(width/2, height - canvas.pad)
       };
       int i = int(random(4));
-      if(!randomSpawn){
+      if (!randomSpawn) {
         i = num%4;
       }
       this.pos = edges[i];
@@ -140,28 +135,28 @@ class Agent {
       if (correctAngle) { // Correct angle to point towards canvas
         if (this.pos.equals(edges[0])) { // Left edge: angle to the right
           this.angle = random(3*PI/2, 5*PI/2);
-          if(randomSpawn){
+          if (randomSpawn) {
             this.angle = random(3*PI/2, 5*PI/2);
           } else {
             this.angle = 3*PI/2 + (num/2*total)*(180/PI);
           }
         } else if (this.pos.equals(edges[1])) { // Top edge: angle to the bot
           this.angle = random(0, PI);
-          if(randomSpawn){
+          if (randomSpawn) {
             this.angle = random(0, PI);
           } else {
             this.angle = 0 + (num/2*total)*(180/PI);
           }
         } else if (this.pos.equals(edges[2])) { // Right edge: angle to the left
           this.angle = random(PI/2, 3*PI/2);
-          if(randomSpawn){
+          if (randomSpawn) {
             this.angle = random(PI/2, 3*PI/2);
           } else {
             this.angle = PI/2 + (num/2*total)*(180/PI);
           }
         } else if (this.pos.equals(edges[3])) { // Bot edge: angle to the top
           this.angle = random(PI, 2*PI);
-          if(randomSpawn){
+          if (randomSpawn) {
             this.angle = random(PI, 2*PI);
           } else {
             this.angle = PI + (num/2*total)*(180/PI);
@@ -175,14 +170,14 @@ class Agent {
     } else if (spawn == "spiral") { // Spiral position
       // Equation for spiral: x(t) = a * t * cos(t), y(t) = a * t * sin(t)
       float t = random(1) * tScale;
-      if(!randomSpawn){
-        t = num/total * tScale;
-      }
+      //if(!randomSpawn){ //Gradual spawn doesn't work this way?
+      //t = num/total * tScale;
+      //}
       float offsetX = a * t * cos(t);
       float offsetY = a * t * sin(t);
       float x = width/2 ;
       float y = height/2 ;
-      
+
       if (random(1)>0.5) {
         x += offsetX;
         y += offsetY;
