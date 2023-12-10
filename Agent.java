@@ -72,11 +72,7 @@ class Agent {
       int i = int(random(4));
       if (!randomSpawn) {
         i = int(num)%4;
-      } /*else {
-       num = (num - num%4)/4;
-       total = total/4;
-       }*/
-
+      }
       float spawnAngle = angles[i]; //BOT RIGHT
       isInCorner[i] = true;
       float x = width/2 + canvas.maxDistance * cos(spawnAngle);
@@ -170,7 +166,7 @@ class Agent {
     } else if (spawn == "spiral") { // Spiral position
       // Equation for spiral: x(t) = a * t * cos(t), y(t) = a * t * sin(t)
       float t = random(1) * tScale;
-      if(!randomSpawn){ //Gradual spawn doesn't work this way?
+      if(!randomSpawn){
       t = num/total * tScale;
       }
       float offsetX = a * t * cos(t);

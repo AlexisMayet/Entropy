@@ -14,7 +14,7 @@ float acc = 0.00;
 //Colision direction : whether agents points towards center after collision with wall
 boolean collisionCenterDir = true;
 //Center direction : whether spawn direction is aimed at center
-boolean spawnCenterDir = false;
+boolean spawnCenterDir = true;
 //Correct angle : whether to correct spawn angle to be directed within the grid (for "corners" and "edges" spawns)
 boolean correctAngle = true;
 
