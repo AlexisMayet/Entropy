@@ -7,8 +7,8 @@ class Agent {
   Canvas canvas;
 
   boolean randomSpawn;
-  int num;
-  int total;
+  float num;
+  float total;
 
   boolean collisionCenterDir;
   boolean spawnCenterDir;
@@ -31,7 +31,7 @@ class Agent {
   float diff = 1;
   boolean bounced;
 
-  Agent(Canvas canvas, boolean randomSpawn, int num, int total, boolean collisionCenterDir, boolean spawnCenterDir, boolean correctAngle, float speed, float acc, float size, String spawn, String detail, int radius, color[] palette, color contour, String colorChange) {
+  Agent(Canvas canvas, boolean randomSpawn, float num, float total, boolean collisionCenterDir, boolean spawnCenterDir, boolean correctAngle, float speed, float acc, float size, String spawn, String detail, int radius, color[] palette, color contour, String colorChange) {
     this.canvas = canvas;
 
     this.randomSpawn = randomSpawn;
@@ -71,7 +71,7 @@ class Agent {
 
       int i = int(random(4));
       if (!randomSpawn) {
-        i = num%4;
+        i = int(num)%4;
       } /*else {
        num = (num - num%4)/4;
        total = total/4;
@@ -128,7 +128,7 @@ class Agent {
       };
       int i = int(random(4));
       if (!randomSpawn) {
-        i = num%4;
+        i = int(num)%4;
       }
       this.pos = edges[i];
 
@@ -170,9 +170,9 @@ class Agent {
     } else if (spawn == "spiral") { // Spiral position
       // Equation for spiral: x(t) = a * t * cos(t), y(t) = a * t * sin(t)
       float t = random(1) * tScale;
-      //if(!randomSpawn){ //Gradual spawn doesn't work this way?
-      //t = num/total * tScale;
-      //}
+      if(!randomSpawn){ //Gradual spawn doesn't work this way?
+      t = num/total * tScale;
+      }
       float offsetX = a * t * cos(t);
       float offsetY = a * t * sin(t);
       float x = width/2 ;
